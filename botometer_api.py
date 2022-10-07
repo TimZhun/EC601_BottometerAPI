@@ -1,19 +1,35 @@
 
 import tweepy
 import configparser
-import pandas as pd 
+import botometer
 
 #read configs
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-api_key = config['tweeter']['api_key']
-api_key_secret = config['tweeter']['api_key_secret']
-access_token = config['tweeter']['access_token']
-access_token_secret = config['tweeter']['access_token_secret']
+rapidapi_key = config['botometer']['rap_key']
+consumer_key = config['botometer']['api_key']
+consumer_secret = config['botometer']['api_key_secret']
+access_token = config['botometer']['access_token']
+access_token_secret = config['botometer']['access_token_secret']
 
 # authentication 
-auth = tweepy.OAuthHandler(api_key, api_key_secret)
-auth.set_access_token(access_token, access_token_secret)
-api =tweepy.API(auth)
-public_tweets = api.home_timeline()
+
+twitter_app_auth = {
+    'consumer_key': consumer_key,
+    'consumer_secret': consumer_secret,
+    'access_token': access_token,
+    'access_token_secret': access_token_secret,
+  }
+
+bom = botometer.Botometer(wait_on_ratelimit=True,
+                          rapidapi_key=rapidapi_key,
+                          **twitter_app_auth)
+
+# Check a single account by screen name
+result = bom.check_account('@TamirlanN')
+print(result)
+
+# Check a single account by id
+result = bom.check_account(1548959833)
+print(result)
